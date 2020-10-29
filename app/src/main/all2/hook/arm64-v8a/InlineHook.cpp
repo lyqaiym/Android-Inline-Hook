@@ -19,8 +19,8 @@ extern "C"
 #include "hooktest.h"
 }
 
-void ModifyIBored() __attribute__((constructor));
-void before_main() __attribute__((constructor));
+//void ModifyIBored() __attribute__((constructor));
+//void before_main() __attribute__((constructor));
 
 typedef std::vector<INLINE_HOOK_INFO*> InlineHookInfoPVec;
 static InlineHookInfoPVec gs_vecInlineHookInfo;     //管理HOOK点
@@ -120,7 +120,8 @@ void ModifyIBored()
 {
     LOGI("In IHook's ModifyIBored.");
 
-    int target_offset = 0x600; //*想Hook的目标在目标so中的偏移*
+//    int target_offset = 0x600; //*想Hook的目标在目标so中的偏移*
+    int target_offset = 0x65c; //*想Hook的目标在目标so中的偏移*
 
     void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libtarget.so"); //目标so的名称
     if(pModuleBaseAddr == 0){
