@@ -17,10 +17,10 @@
 #define BYTE unsigned char
 #endif
 
-#define OPCODEMAXLEN 24      //inline hookËùĞèÒªµÄopcodes×î´ó³¤¶È,arm64Îª20
-#define BACKUP_CODE_NUM_MAX 6  //¾¡¹Ü±¸·İÔ­³ÌĞò6Ìõarm64Ö¸Áî¡£
+#define OPCODEMAXLEN 24      //inline hookæ‰€éœ€è¦çš„opcodesæœ€å¤§é•¿åº¦,arm64ä¸º20
+#define BACKUP_CODE_NUM_MAX 6  //å°½ç®¡å¤‡ä»½åŸç¨‹åº6æ¡arm64æŒ‡ä»¤ã€‚
 
-#define LOG_TAG "GToad"
+#define LOG_TAG "inlinehook"
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args);
 
 #define PAGE_START(addr)	(~(PAGE_SIZE - 1) & (addr))
@@ -39,15 +39,15 @@ extern unsigned long _hookstub_function_addr_s;
 extern unsigned long _old_function_addr_s;
 
 
-//hookµãĞÅÏ¢
+//hookç‚¹ä¿¡æ¯
 typedef struct tagINLINEHOOKINFO{
-    void *pHookAddr;                //hookµÄµØÖ·
-    void *pStubShellCodeAddr;            //Ìø¹ıÈ¥µÄshellcode stubµÄµØÖ·
-    void (*onCallBack)(struct user_pt_regs *);       //»Øµ÷º¯Êı£¬Ìø×ª¹ıÈ¥µÄº¯ÊıµØÖ·
-    void ** ppOldFuncAddr;             //shellcode ÖĞ´æ·Åold functionµÄµØÖ·
-    BYTE szbyBackupOpcodes[OPCODEMAXLEN];    //Ô­À´µÄopcodes
-    int backUpLength; //±¸·İ´úÂëµÄ³¤¶È£¬arm64Ä£Ê½ÏÂÎª20
-    int backUpFixLengthList[BACKUP_CODE_NUM_MAX]; //±£´æ
+    void *pHookAddr;                //hookçš„åœ°å€
+    void *pStubShellCodeAddr;            //è·³è¿‡å»çš„shellcode stubçš„åœ°å€
+    void (*onCallBack)(struct user_pt_regs *);       //å›è°ƒå‡½æ•°ï¼Œè·³è½¬è¿‡å»çš„å‡½æ•°åœ°å€
+    void ** ppOldFuncAddr;             //shellcode ä¸­å­˜æ”¾old functionçš„åœ°å€
+    BYTE szbyBackupOpcodes[OPCODEMAXLEN];    //åŸæ¥çš„opcodes
+    int backUpLength; //å¤‡ä»½ä»£ç çš„é•¿åº¦ï¼Œarm64æ¨¡å¼ä¸‹ä¸º20
+    int backUpFixLengthList[BACKUP_CODE_NUM_MAX]; //ä¿å­˜
     uint64_t *pNewEntryForOldFunction;
 } INLINE_HOOK_INFO;
 

@@ -14,24 +14,24 @@
 
 extern "C"
 {
-    #include "Ihook.h"
+#include "Ihook.h"
 }
 
 void ModifyIBored() __attribute__((constructor));
 void before_main() __attribute__((constructor));
 
 typedef std::vector<INLINE_HOOK_INFO*> InlineHookInfoPVec;
-static InlineHookInfoPVec gs_vecInlineHookInfo;     //¹ÜÀíHOOKµã
+static InlineHookInfoPVec gs_vecInlineHookInfo;     //ç®¡ç†HOOKç‚¹
 
 void before_main() {
     LOGI("Hook is auto loaded!\n");
 }
 
 /**
- * ¶ÔÍâinline hook½Ó¿Ú£¬¸ºÔğ¹ÜÀíinline hookĞÅÏ¢
- * @param  pHookAddr     ÒªhookµÄµØÖ·
- * @param  onCallBack    Òª²åÈëµÄ»Øµ÷º¯Êı
- * @return               inlinehookÊÇ·ñÉèÖÃ³É¹¦£¨ÒÑ¾­ÉèÖÃ¹ı£¬ÖØ¸´ÉèÖÃ·µ»Øfalse£©
+ * å¯¹å¤–inline hookæ¥å£ï¼Œè´Ÿè´£ç®¡ç†inline hookä¿¡æ¯
+ * @param  pHookAddr     è¦hookçš„åœ°å€
+ * @param  onCallBack    è¦æ’å…¥çš„å›è°ƒå‡½æ•°
+ * @return               inlinehookæ˜¯å¦è®¾ç½®æˆåŠŸï¼ˆå·²ç»è®¾ç½®è¿‡ï¼Œé‡å¤è®¾ç½®è¿”å›falseï¼‰
  */
 bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *))
 {
@@ -54,15 +54,15 @@ bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *))
         return bRet;
     }
 
-    
+
     gs_vecInlineHookInfo.push_back(pstInlineHook);
     return true;
 }
 
 /**
- * ¶ÔÍâ½Ó¿Ú£¬ÓÃÓÚÈ¡Ïûinline hook
- * @param  pHookAddr ÒªÈ¡Ïûinline hookµÄÎ»ÖÃ
- * @return           ÊÇ·ñÈ¡Ïû³É¹¦£¨²»´æÔÚ·µ»ØÈ¡ÏûÊ§°Ü£©
+ * å¯¹å¤–æ¥å£ï¼Œç”¨äºå–æ¶ˆinline hook
+ * @param  pHookAddr è¦å–æ¶ˆinline hookçš„ä½ç½®
+ * @return           æ˜¯å¦å–æ¶ˆæˆåŠŸï¼ˆä¸å­˜åœ¨è¿”å›å–æ¶ˆå¤±è´¥ï¼‰
  */
 bool UnInlineHook(void *pHookAddr)
 {
@@ -100,11 +100,11 @@ bool UnInlineHook(void *pHookAddr)
 }
 
 /**
- * ÓÃ»§×Ô¶¨ÒåµÄstubº¯Êı£¬Ç¶ÈëÔÚhookµãÖĞ£¬¿ÉÖ±½Ó²Ù×÷¼Ä´æÆ÷µÈ¸Ä±äÓÎÏ·Âß¼­²Ù×÷
- * ÕâÀï½«R0¼Ä´æÆ÷Ëø¶¨Îª0x333£¬Ò»¸öÔ¶´óÓÚ30µÄÖµ
- * @param regs ¼Ä´æÆ÷½á¹¹£¬±£´æ¼Ä´æÆ÷µ±Ç°hookµãµÄ¼Ä´æÆ÷ĞÅÏ¢
+ * ç”¨æˆ·è‡ªå®šä¹‰çš„stubå‡½æ•°ï¼ŒåµŒå…¥åœ¨hookç‚¹ä¸­ï¼Œå¯ç›´æ¥æ“ä½œå¯„å­˜å™¨ç­‰æ”¹å˜æ¸¸æˆé€»è¾‘æ“ä½œ
+ * è¿™é‡Œå°†R0å¯„å­˜å™¨é”å®šä¸º0x333ï¼Œä¸€ä¸ªè¿œå¤§äº30çš„å€¼
+ * @param regs å¯„å­˜å™¨ç»“æ„ï¼Œä¿å­˜å¯„å­˜å™¨å½“å‰hookç‚¹çš„å¯„å­˜å™¨ä¿¡æ¯
  */
-void EvilHookStubFunctionForIBored(user_pt_regs *regs) //²ÎÊıregs¾ÍÊÇÖ¸ÏòÕ»ÉÏµÄÒ»¸öÊı¾İ½á¹¹£¬ÓÉµÚ¶ş²¿·ÖµÄmov r0, spËù´«µİ¡£
+void EvilHookStubFunctionForIBored(user_pt_regs *regs) //å‚æ•°regså°±æ˜¯æŒ‡å‘æ ˆä¸Šçš„ä¸€ä¸ªæ•°æ®ç»“æ„ï¼Œç”±ç¬¬äºŒéƒ¨åˆ†çš„mov r0, spæ‰€ä¼ é€’ã€‚
 {
     LOGI("In Evil Hook Stub.");
     //regs->uregs[2] = 0x333; //regs->uregs[0]=0x333
@@ -112,24 +112,24 @@ void EvilHookStubFunctionForIBored(user_pt_regs *regs) //²ÎÊıregs¾ÍÊÇÖ¸ÏòÕ»ÉÏµÄÒ
 }
 
 /**
- * Õë¶ÔIBoredÓ¦ÓÃ£¬Í¨¹ıinline hook¸Ä±äÓÎÏ·Âß¼­µÄ²âÊÔº¯Êı
+ * é’ˆå¯¹IBoredåº”ç”¨ï¼Œé€šè¿‡inline hookæ”¹å˜æ¸¸æˆé€»è¾‘çš„æµ‹è¯•å‡½æ•°
  */
 void ModifyIBored()
 {
     LOGI("In IHook's ModifyIBored.");
 
-    int target_offset = 0x600; //*ÏëHookµÄÄ¿±êÔÚÄ¿±êsoÖĞµÄÆ«ÒÆ*
+    int target_offset = 0x600; //*æƒ³Hookçš„ç›®æ ‡åœ¨ç›®æ ‡soä¸­çš„åç§»*
 
-    void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libhellojni.so"); //Ä¿±êsoµÄÃû³Æ
+    void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libhellojni.so"); //ç›®æ ‡soçš„åç§°
 
     if(pModuleBaseAddr == 0)
     {
         LOGI("get module base error.");
         return;
     }
-    
-    uint64_t uiHookAddr = (uint64_t)pModuleBaseAddr + target_offset; //ÕæÊµHookµÄÄÚ´æµØÖ·
 
-    
-    InlineHook((void*)(uiHookAddr), EvilHookStubFunctionForIBored); //*µÚ¶ş¸ö²ÎÊı¾ÍÊÇHookÏëÒª²åÈëµÄ¹¦ÄÜ´¦Àíº¯Êı*
+    uint64_t uiHookAddr = (uint64_t)pModuleBaseAddr + target_offset; //çœŸå®Hookçš„å†…å­˜åœ°å€
+
+
+    InlineHook((void*)(uiHookAddr), EvilHookStubFunctionForIBored); //*ç¬¬äºŒä¸ªå‚æ•°å°±æ˜¯Hookæƒ³è¦æ’å…¥çš„åŠŸèƒ½å¤„ç†å‡½æ•°*
 }

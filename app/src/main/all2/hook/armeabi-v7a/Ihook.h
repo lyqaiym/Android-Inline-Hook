@@ -18,7 +18,7 @@
 #define OPCODEMAXLEN 12      //inline hook所需要的opcodes最大长度,arm为8，thumb为12/10（因为要补一个nop），所以这里取12，当arm的时候只memcpy 8btye就行了
 #define BACKUP_CODE_NUM_MAX 10  //尽管备份指令最多的可能是thumb-2下的6条thumb16，但是为了保险起见选择了10。
 
-#define LOG_TAG "GToad"
+#define LOG_TAG "inlinehook"
 #define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args);
 
 #define PAGE_START(addr)	(~(PAGE_SIZE - 1) & (addr))

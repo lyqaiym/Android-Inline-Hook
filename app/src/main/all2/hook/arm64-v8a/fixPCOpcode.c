@@ -12,36 +12,36 @@ enum INSTRUCTION_TYPE {
 	// B <label>
 	B_ARM,
 
-    // <Add by GToad>
-    // B <label>
+	// <Add by GToad>
+	// B <label>
 	BEQ_ARM,
-    // B <label>
+	// B <label>
 	BNE_ARM,
-    // B <label>
+	// B <label>
 	BCS_ARM,
-    // B <label>
+	// B <label>
 	BCC_ARM,
-    // B <label>
+	// B <label>
 	BMI_ARM,
-    // B <label>
+	// B <label>
 	BPL_ARM,
-    // B <label>
+	// B <label>
 	BVS_ARM,
-    // B <label>
+	// B <label>
 	BVC_ARM,
-    // B <label>
+	// B <label>
 	BHI_ARM,
-    // B <label>
+	// B <label>
 	BLS_ARM,
-    // B <label>
+	// B <label>
 	BGE_ARM,
-    // B <label>
+	// B <label>
 	BLT_ARM,
-    // B <label>
+	// B <label>
 	BGT_ARM,
-    // B <label>
+	// B <label>
 	BLE_ARM,
-    // </Add by GToad>
+	// </Add by GToad>
 
 	// BX PC
 	BX_ARM,
@@ -88,94 +88,94 @@ enum INSTRUCTION_TYPE {
 
 int lengthFixArm64(uint32_t opcode)
 {
-    int type;
-    type = getTypeInArm64(opcode);
-    switch(type)
-    {
-        case B_COND_ARM64:return 32;break;
-        case BNE_ARM:
-        case BCS_ARM:
-        case BCC_ARM:
-        case BMI_ARM:
-        case BPL_ARM:
-        case BVS_ARM:
-        case BVC_ARM:
-        case BHI_ARM:
-        case BLS_ARM:
-        case BGE_ARM:
-        case BLT_ARM:
-        case BGT_ARM:
-        case BLE_ARM:return 12;break;
-        case BLX_ARM:
-        case BL_ARM:return 12;break;
-        case B_ARM:
-        case BX_ARM:return 8;break;
-        case ADD_ARM:return 24;break;
-        case ADR1_ARM:
-        case ADR2_ARM:
-        case LDR_ARM:
-        case MOV_ARM:return 12;break;
-        case UNDEFINE:return 4;
-    }    
+	int type;
+	type = getTypeInArm64(opcode);
+	switch(type)
+	{
+		case B_COND_ARM64:return 32;break;
+		case BNE_ARM:
+		case BCS_ARM:
+		case BCC_ARM:
+		case BMI_ARM:
+		case BPL_ARM:
+		case BVS_ARM:
+		case BVC_ARM:
+		case BHI_ARM:
+		case BLS_ARM:
+		case BGE_ARM:
+		case BLT_ARM:
+		case BGT_ARM:
+		case BLE_ARM:return 12;break;
+		case BLX_ARM:
+		case BL_ARM:return 12;break;
+		case B_ARM:
+		case BX_ARM:return 8;break;
+		case ADD_ARM:return 24;break;
+		case ADR1_ARM:
+		case ADR2_ARM:
+		case LDR_ARM:
+		case MOV_ARM:return 12;break;
+		case UNDEFINE:return 4;
+	}
 }
 
 
 int lengthFixArm32(uint32_t opcode)
 {
-    int type;
-    type = getTypeInArm32(opcode);
-    switch(type)
-    {
-        case BEQ_ARM:
-        case BNE_ARM:
-        case BCS_ARM:
-        case BCC_ARM:
-        case BMI_ARM:
-        case BPL_ARM:
-        case BVS_ARM:
-        case BVC_ARM:
-        case BHI_ARM:
-        case BLS_ARM:
-        case BGE_ARM:
-        case BLT_ARM:
-        case BGT_ARM:
-        case BLE_ARM:return 12;break;
-        case BLX_ARM:
-        case BL_ARM:return 12;break;
-        case B_ARM:
-        case BX_ARM:return 8;break;
-        case ADD_ARM:return 24;break;
-        case ADR1_ARM:
-        case ADR2_ARM:
-        case LDR_ARM:
-        case MOV_ARM:return 12;break;
-        case UNDEFINE:return 4;
-    }    
+	int type;
+	type = getTypeInArm32(opcode);
+	switch(type)
+	{
+		case BEQ_ARM:
+		case BNE_ARM:
+		case BCS_ARM:
+		case BCC_ARM:
+		case BMI_ARM:
+		case BPL_ARM:
+		case BVS_ARM:
+		case BVC_ARM:
+		case BHI_ARM:
+		case BLS_ARM:
+		case BGE_ARM:
+		case BLT_ARM:
+		case BGT_ARM:
+		case BLE_ARM:return 12;break;
+		case BLX_ARM:
+		case BL_ARM:return 12;break;
+		case B_ARM:
+		case BX_ARM:return 8;break;
+		case ADD_ARM:return 24;break;
+		case ADR1_ARM:
+		case ADR2_ARM:
+		case LDR_ARM:
+		case MOV_ARM:return 12;break;
+		case UNDEFINE:return 4;
+	}
 }
 
 
 
 static int getTypeInArm64(uint32_t instruction)
 {
-    LOGI("getTypeInArm64 : %x", instruction);
+	LOGI("getTypeInArm64 : %x", instruction);
 	if ((instruction & 0x9F000000) == 0x10000000) {
 		return ADR_ARM64;
 	}
 	if ((instruction & 0x9F000000) == 0x90000000) {
 		return ADRP_ARM64;
 	}
-    if ((instruction & 0xFC000000) == 0x14000000) {
+	if ((instruction & 0xFC000000) == 0x14000000) {
 		return B_ARM64;
 	}
-    if ((instruction & 0xFF000010) == 0x54000010) {
+	if ((instruction & 0xFF000010) == 0x54000010) {
 		return B_COND_ARM64;
 	}
-    if ((instruction & 0xFC000000) == 0x94000000) {
+	if ((instruction & 0xFC000000) == 0x94000000) {
 		return BL_ARM64;
 	}
 
 
-    if ((instruction & 0xFF000000) == 0x58000000) {//LDR Lliteral need to learn
+	if ((instruction & 0xFF000000) == 0x58000000) {//LDR Lliteral need to learn
 		return LDR_ARM64;
 	}
 	if ((instruction & 0x7F000000) == 0x35000000) {
@@ -194,13 +194,13 @@ static int getTypeInArm64(uint32_t instruction)
 	if ((instruction & 0xFF000000) == 0x18000000) {//LDR Lliteral 32 need to learn
 		return LDR_ARM64_32;
 	}
-	
+
 	return UNDEFINE;
 }
 
 static int getTypeInArm32(uint32_t instruction)
 {
-    LOGI("getTypeInArm : %x", instruction);
+	LOGI("getTypeInArm : %x", instruction);
 	if ((instruction & 0xFE000000) == 0xFA000000) {
 		return BLX_ARM;
 	}
@@ -210,57 +210,57 @@ static int getTypeInArm32(uint32_t instruction)
 	if ((instruction & 0xFE000000) == 0x0A000000) {
 		return BEQ_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x1A000000) {
+	if ((instruction & 0xFE000000) == 0x1A000000) {
 		return BNE_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x2A000000) {
+	if ((instruction & 0xFE000000) == 0x2A000000) {
 		return BCS_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x3A000000) {
+	if ((instruction & 0xFE000000) == 0x3A000000) {
 		return BCC_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x4A000000) {
+	if ((instruction & 0xFE000000) == 0x4A000000) {
 		return BMI_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x5A000000) {
+	if ((instruction & 0xFE000000) == 0x5A000000) {
 		return BPL_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x6A000000) {
+	if ((instruction & 0xFE000000) == 0x6A000000) {
 		return BVS_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x7A000000) {
+	if ((instruction & 0xFE000000) == 0x7A000000) {
 		return BVC_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x8A000000) {
+	if ((instruction & 0xFE000000) == 0x8A000000) {
 		return BHI_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0x9A000000) {
+	if ((instruction & 0xFE000000) == 0x9A000000) {
 		return BLS_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0xAA000000) {
+	if ((instruction & 0xFE000000) == 0xAA000000) {
 		return BGE_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0xBA000000) {
+	if ((instruction & 0xFE000000) == 0xBA000000) {
 		return BLT_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0xCA000000) {
+	if ((instruction & 0xFE000000) == 0xCA000000) {
 		return BGT_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0xDA000000) {
+	if ((instruction & 0xFE000000) == 0xDA000000) {
 		return BLE_ARM;
 	}
-    if ((instruction & 0xFE000000) == 0xEA000000) {
+	if ((instruction & 0xFE000000) == 0xEA000000) {
 		return B_ARM;
 	}
-    
-    /*
+
+	/*
     if ((instruction & 0xFF000000) == 0xFA000000) {
-		return BLX_ARM;
-	} *//*
+        return BLX_ARM;
+    } *//*
     if ((instruction & 0xF000000) == 0xA000000) {
 		return B_ARM;
 	}*/
-    
+
 	if ((instruction & 0xFF000FF) == 0x120001F) {
 		return BX_ARM;
 	}
@@ -271,7 +271,7 @@ static int getTypeInArm32(uint32_t instruction)
 		return ADR1_ARM;
 	}
 	if ((instruction & 0xFFF0000) == 0x24F0000) {
-		return ADR2_ARM;		
+		return ADR2_ARM;
 	}
 	if ((instruction & 0xE5F0000) == 0x41F0000) {
 		return LDR_ARM;
@@ -286,53 +286,53 @@ static int getTypeInArm32(uint32_t instruction)
 
 bool isTargetAddrInBackup(uint64_t target_addr, uint64_t hook_addr, int backup_length)
 {
-    if((target_addr<=hook_addr+backup_length)&&(target_addr>=hook_addr))
-        return true;
-    return false;
+	if((target_addr<=hook_addr+backup_length)&&(target_addr>=hook_addr))
+		return true;
+	return false;
 }
 
 int fixPCOpcodeArm(void *fixOpcodes , INLINE_HOOK_INFO* pstInlineHook)
 {
-    uint64_t pc;
-    uint64_t lr;
-    int backUpPos = 0;
-    int fixPos = 0;
-    int offset = 0;
-    //int isConditionBcode = 0;
-    uint32_t *currentOpcode;
-    uint32_t tmpFixOpcodes[40]; //对于每条PC命令的修复指令都将暂时保存在这里。
-    //uint32_t tmpBcodeFix;
-    //uint32_t tmpBcodeX = 0;
+	uint64_t pc;
+	uint64_t lr;
+	int backUpPos = 0;
+	int fixPos = 0;
+	int offset = 0;
+	//int isConditionBcode = 0;
+	uint32_t *currentOpcode;
+	uint32_t tmpFixOpcodes[40]; //对于每条PC命令的修复指令都将暂时保存在这里。
+	//uint32_t tmpBcodeFix;
+	//uint32_t tmpBcodeX = 0;
 	//trampoline_instructions[trampoline_pos++] == 0xf85f83e0; // ldr x0, [sp, #-0x8] recover the x0 register
 
-    LOGI("Fixing Arm !!!!!!!");
+	LOGI("Fixing Arm !!!!!!!");
 
-    currentOpcode = pstInlineHook->szbyBackupOpcodes + sizeof(uint8_t)*backUpPos;
-    LOGI("sizeof(uint8_t) : %D", sizeof(uint8_t));
+	currentOpcode = pstInlineHook->szbyBackupOpcodes + sizeof(uint8_t)*backUpPos;
+	LOGI("sizeof(uint8_t) : %D", sizeof(uint8_t));
 
-    pc = pstInlineHook->pHookAddr; //pc变量用于保存原本指令执行时的pc值
-    lr = pstInlineHook->pHookAddr + pstInlineHook->backUpLength;
+	pc = pstInlineHook->pHookAddr; //pc变量用于保存原本指令执行时的pc值
+	lr = pstInlineHook->pHookAddr + pstInlineHook->backUpLength;
 
-    if(pstInlineHook == NULL)
-    {
-        LOGI("pstInlineHook is null");
-    }
+	if(pstInlineHook == NULL)
+	{
+		LOGI("pstInlineHook is null");
+	}
 
 	tmpFixOpcodes[0] = 0xf85f83e0; // ldr x0, [sp, #-0x8] recover the x0 register
 	offset = 4;
 	memcpy(fixOpcodes+fixPos, tmpFixOpcodes, offset);
 	fixPos=+offset;
 
-    while(1) // 在这个循环中，每次都处理一个arm64命令
-    {
-        //LOGI("-------------START----------------");
-        LOGI("currentOpcode is %x",*currentOpcode);
-        
-        offset = fixPCOpcodeArm64(pc, lr, *currentOpcode, tmpFixOpcodes, pstInlineHook);
-        //LOGI("isConditionBcode : %d", isConditionBcode);
-        //LOGI("offset : %d", offset);
-        memcpy(fixOpcodes+fixPos, tmpFixOpcodes, offset);
-        /*
+	while(1) // 在这个循环中，每次都处理一个arm64命令
+	{
+		//LOGI("-------------START----------------");
+		LOGI("currentOpcode is %x",*currentOpcode);
+
+		offset = fixPCOpcodeArm64(pc, lr, *currentOpcode, tmpFixOpcodes, pstInlineHook);
+		//LOGI("isConditionBcode : %d", isConditionBcode);
+		//LOGI("offset : %d", offset);
+		memcpy(fixOpcodes+fixPos, tmpFixOpcodes, offset);
+		/*
         if (isConditionBcode==1) { // the first code is B??
             if (backUpPos == 4) { // the second has just been processed
                 LOGI("Fix the first b_code.");
@@ -367,52 +367,52 @@ int fixPCOpcodeArm(void *fixOpcodes , INLINE_HOOK_INFO* pstInlineHook)
                 tmpBcodeX = tmpBcodeX + 8 + pstInlineHook->pHookAddr;
             }
         }*/
-        
-        backUpPos += 4; //arm32的话下一次取后面4 byte偏移的指令
-        pc += sizeof(uint32_t);
 
-        fixPos += offset;
-        //LOGI("fixPos : %d", fixPos);
-        //LOGI("--------------END-----------------");
+		backUpPos += 4; //arm32的话下一次取后面4 byte偏移的指令
+		pc += sizeof(uint32_t);
 
-        if (backUpPos < pstInlineHook->backUpLength)
-        {
+		fixPos += offset;
+		//LOGI("fixPos : %d", fixPos);
+		//LOGI("--------------END-----------------");
+
+		if (backUpPos < pstInlineHook->backUpLength)
+		{
 			LOGI("ONE FINISH");
-            currentOpcode = pstInlineHook->szbyBackupOpcodes + sizeof(uint8_t)*backUpPos;
-        }
-        else{
-            LOGI("pstInlineHook->backUpLength : %d", pstInlineHook->backUpLength);
-            LOGI("backUpPos : %d",backUpPos);
-            LOGI("fixPos : %d", fixPos);
-            LOGI("Fix finish !");
-            return fixPos;
-        }
-    }
+			currentOpcode = pstInlineHook->szbyBackupOpcodes + sizeof(uint8_t)*backUpPos;
+		}
+		else{
+			LOGI("pstInlineHook->backUpLength : %d", pstInlineHook->backUpLength);
+			LOGI("backUpPos : %d",backUpPos);
+			LOGI("fixPos : %d", fixPos);
+			LOGI("Fix finish !");
+			return fixPos;
+		}
+	}
 
-    LOGI("Something wrong in arm64 fixing...");
+	LOGI("Something wrong in arm64 fixing...");
 
-    return 0;
+	return 0;
 }
 
 int fixBcond(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *trampoline_instructions, INLINE_HOOK_INFO* pstInlineHook)
 {
-	
+
 }
 
 int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *trampoline_instructions, INLINE_HOOK_INFO* pstInlineHook)
 {
-    int type;
+	int type;
 	//int offset;
-    int trampoline_pos;
-    uint32_t new_entry_addr = (uint32_t)pstInlineHook->pNewEntryForOldFunction;
-    LOGI("new_entry_addr : %x",new_entry_addr);
+	int trampoline_pos;
+	uint32_t new_entry_addr = (uint32_t)pstInlineHook->pNewEntryForOldFunction;
+	LOGI("new_entry_addr : %x",new_entry_addr);
 
-    trampoline_pos = 0;
+	trampoline_pos = 0;
 	//trampoline_instructions[trampoline_pos++] == 0xf85f83e0; // ldr x0, [sp, #-0x8] recover the x0 register
-    LOGI("THE ARM64 OPCODE IS %x",instruction);
-    type = getTypeInArm64(instruction);
-    //type = getTypeInArm(instruction); //判断该arm指令的种类
-	
+	LOGI("THE ARM64 OPCODE IS %x",instruction);
+	type = getTypeInArm64(instruction);
+	//type = getTypeInArm(instruction); //判断该arm指令的种类
+
 	if (type == B_COND_ARM64) {
 		//STP X_tmp1, X_tmp2, [SP, -0x10]
 		//LDR X_tmp2, ?
@@ -420,7 +420,7 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 		//BR X_tmp2
 		//B 8
 		//PC+imm*4
-        LOGI("B_COND_ARM64");
+		LOGI("B_COND_ARM64");
 		uint32_t target_ins;
 		uint32_t imm19;
 		uint64_t value;
@@ -456,13 +456,13 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 			trampoline_instructions[trampoline_pos++] = (uint32_t)(value >> 32);
 			trampoline_instructions[trampoline_pos++] = (uint32_t)(value & 0xffffffff);
 		}
-		
-        return 4*trampoline_pos;
-    }
+
+		return 4*trampoline_pos;
+	}
 	if (type == ADR_ARM64) {
 		//LDR Rn, 4
 		//PC+imm*4
-        LOGI("ADR_ARM64");
+		LOGI("ADR_ARM64");
 		uint32_t imm21;
 		uint64_t value;
 		uint32_t rd;
@@ -474,19 +474,19 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 			value = pc - 4 * (0x1fffff - imm21 + 1);
 		}
 		LOGI("value : %x",value);
-		
+
 		rd = instruction & 0x1f;
 		trampoline_instructions[trampoline_pos++] = 0x58000020+rd; // ldr rd, 4
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value >> 32);
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value & 0xffffffff);
 
-        return 4*trampoline_pos;
-    }
-    if (type == ADRP_ARM64) {
+		return 4*trampoline_pos;
+	}
+	if (type == ADRP_ARM64) {
 		//LDR Rn, 8
 		//B 12
 		//PC+imm*4096
-        LOGI("ADRP_ARM64");
+		LOGI("ADRP_ARM64");
 		uint32_t imm21;
 		uint64_t value;
 		uint32_t rd;
@@ -502,24 +502,24 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 		LOGI("value : %lx",value);
 		LOGI("valueh : %x",(uint32_t)(value >> 32));
 		LOGI("valuel : %x",(uint32_t)(value & 0xffffffff));
-		
+
 		rd = instruction & 0x1f;
 		trampoline_instructions[trampoline_pos++] = 0x58000040+rd; // ldr rd, 8
 		trampoline_instructions[trampoline_pos++] = 0x14000003; // b 12
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value & 0xffffffff);
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value >> 32);
-		
 
-        return 4*trampoline_pos;
-    }
-    if (type == LDR_ARM64) {
+
+		return 4*trampoline_pos;
+	}
+	if (type == LDR_ARM64) {
 		//STP Xt, Xn, [SP, #-0x10]
 		//LDR Xn, 16
 		//LDR Xt, [Xn, 0]
 		//LDR Xn, [sp, #-0x8]
 		//B 8
 		//PC+imm*4
-        LOGI("LDR_ARM64");
+		LOGI("LDR_ARM64");
 		uint32_t imm19;
 		uint64_t value;
 		uint32_t rt;
@@ -548,8 +548,8 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value >> 32);
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value & 0xffffffff);
 
-        return 4*trampoline_pos;
-    }
+		return 4*trampoline_pos;
+	}
 	if (type == B_ARM64) {
 		//STP X_tmp1, X_tmp2, [SP, -0x10]
 		//LDR X_tmp2, ?
@@ -557,7 +557,7 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 		//BR X_tmp2
 		//B 8
 		//PC+imm*4
-        LOGI("B_ARM64");
+		LOGI("B_ARM64");
 		uint32_t target_ins;
 		uint32_t imm26;
 		uint64_t value;
@@ -578,17 +578,17 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value >> 32);
 		trampoline_instructions[trampoline_pos++] = (uint32_t)(value & 0xffffffff);
 
-        return 4*trampoline_pos;
-    }
+		return 4*trampoline_pos;
+	}
 	else {
-        LOGI("OTHER_ARM");
+		LOGI("OTHER_ARM");
 		trampoline_instructions[trampoline_pos++] = instruction;
-        return 4*trampoline_pos;
+		return 4*trampoline_pos;
 	}
 	//pc += sizeof(uint32_t);
-	
+
 	//trampoline_instructions[trampoline_pos++] = 0xe51ff004;	// LDR PC, [PC, #-4]
 	//trampoline_instructions[trampoline_pos++] = lr;
-    return 4*trampoline_pos;
+	return 4*trampoline_pos;
 }
 

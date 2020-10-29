@@ -4,48 +4,48 @@
 #define ALIGN_PC(pc)	(pc & 0xFFFFFFFC)
 
 /**
- * ĞŞ¸ÄÒ³ÊôĞÔ£¬¸Ä³É¿É¶Á¿ÉĞ´¿ÉÖ´ĞĞ
- * @param   pAddress   ĞèÒªĞŞ¸ÄÊôĞÔÆğÊ¼µØÖ·
- * @param   size       ĞèÒªĞŞ¸ÄÒ³ÊôĞÔµÄ³¤¶È£¬byteÎªµ¥Î»
- * @return  bool       ĞŞ¸ÄÊÇ·ñ³É¹¦
+ * ä¿®æ”¹é¡µå±æ€§ï¼Œæ”¹æˆå¯è¯»å¯å†™å¯æ‰§è¡Œ
+ * @param   pAddress   éœ€è¦ä¿®æ”¹å±æ€§èµ·å§‹åœ°å€
+ * @param   size       éœ€è¦ä¿®æ”¹é¡µå±æ€§çš„é•¿åº¦ï¼Œbyteä¸ºå•ä½
+ * @return  bool       ä¿®æ”¹æ˜¯å¦æˆåŠŸ
  */
 bool ChangePageProperty(void *pAddress, size_t size)
 {
     bool bRet = false;
-    
+
     if(pAddress == NULL)
     {
         LOGI("change page property error.");
         return bRet;
     }
-    
-    //¼ÆËã°üº¬µÄÒ³Êı¡¢¶ÔÆëÆğÊ¼µØÖ·
-    unsigned long ulPageSize = sysconf(_SC_PAGESIZE); //µÃµ½Ò³µÄ´óĞ¡
+
+    //è®¡ç®—åŒ…å«çš„é¡µæ•°ã€å¯¹é½èµ·å§‹åœ°å€
+    unsigned long ulPageSize = sysconf(_SC_PAGESIZE); //å¾—åˆ°é¡µçš„å¤§å°
     int iProtect = PROT_READ | PROT_WRITE | PROT_EXEC;
     unsigned long ulNewPageStartAddress = (unsigned long)(pAddress) & ~(ulPageSize - 1); //pAddress & 0x1111 0000 0000 0000
     long lPageCount = (size / ulPageSize) + 1;
-    
+
     long l = 0;
     while(l < lPageCount)
     {
-        //ÀûÓÃmprotect¸ÄÒ³ÊôĞÔ
+        //åˆ©ç”¨mprotectæ”¹é¡µå±æ€§
         int iRet = mprotect((const void *)(ulNewPageStartAddress), ulPageSize, iProtect);
         if(-1 == iRet)
         {
             LOGI("mprotect error:%s", strerror(errno));
             return bRet;
         }
-        l++; 
+        l++;
     }
-    
+
     return true;
 }
 
 /**
- * Í¨¹ı/proc/$pid/maps£¬»ñÈ¡Ä£¿é»ùÖ·
- * @param   pid                 Ä£¿éËùÔÚ½ø³Ìpid£¬Èç¹û·ÃÎÊ×ÔÉí½ø³Ì£¬¿ÉÌîĞ¡Óà0µÄÖµ£¬Èç-1
- * @param   pszModuleName       Ä£¿éÃû×Ö
- * @return  void*               Ä£¿é»ùÖ·£¬´íÎóÔò·µ»Ø0
+ * é€šè¿‡/proc/$pid/mapsï¼Œè·å–æ¨¡å—åŸºå€
+ * @param   pid                 æ¨¡å—æ‰€åœ¨è¿›ç¨‹pidï¼Œå¦‚æœè®¿é—®è‡ªèº«è¿›ç¨‹ï¼Œå¯å¡«å°ä½™0çš„å€¼ï¼Œå¦‚-1
+ * @param   pszModuleName       æ¨¡å—åå­—
+ * @return  void*               æ¨¡å—åŸºå€ï¼Œé”™è¯¯åˆ™è¿”å›0
  */
 void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
 {
@@ -57,7 +57,7 @@ void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
 
     LOGI("Pid is %d\n",pid);
 
-    //pidÅĞ¶Ï£¬È·¶¨mapsÎÄ¼ş
+    //pidåˆ¤æ–­ï¼Œç¡®å®šmapsæ–‡ä»¶
     if (pid < 0)
     {
         snprintf(szMapFilePath, sizeof(szMapFilePath), "/proc/self/maps");
@@ -76,7 +76,7 @@ void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
 
     LOGI("Get map.\n");
 
-    //Ñ­»·±éÀúmapsÎÄ¼ş£¬ÕÒµ½ÏàÓ¦Ä£¿é£¬½ØÈ¡µØÖ·ĞÅÏ¢
+    //å¾ªç¯éå†mapsæ–‡ä»¶ï¼Œæ‰¾åˆ°ç›¸åº”æ¨¡å—ï¼Œæˆªå–åœ°å€ä¿¡æ¯
     while (fgets(szFileLineBuffer, sizeof(szFileLineBuffer), pFileMaps) != NULL)
     {
         //LOGI("%s\n",szFileLineBuffer);
@@ -101,9 +101,9 @@ void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
 }
 
 /**
- * armÏÂinline hook»ù´¡ĞÅÏ¢±¸·İ£¨±¸·İÔ­ÏÈµÄopcodes£©
- * @param  pstInlineHook inlinehookĞÅÏ¢
- * @return               ³õÊ¼»¯ĞÅÏ¢ÊÇ·ñ³É¹¦
+ * armä¸‹inline hookåŸºç¡€ä¿¡æ¯å¤‡ä»½ï¼ˆå¤‡ä»½åŸå…ˆçš„opcodesï¼‰
+ * @param  pstInlineHook inlinehookä¿¡æ¯
+ * @return               åˆå§‹åŒ–ä¿¡æ¯æ˜¯å¦æˆåŠŸ
  */
 bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
 {
@@ -115,7 +115,7 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
     }
     LOGI("pstInlineHook->szbyBackupOpcodes is at %x",pstInlineHook->szbyBackupOpcodes);
 
-    
+
     if(pstInlineHook == NULL)
     {
         LOGI("pstInlineHook is null");
@@ -123,7 +123,7 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
     }
 
     pstInlineHook->backUpLength = 24;
-    
+
     memcpy(pstInlineHook->szbyBackupOpcodes, pstInlineHook->pHookAddr, pstInlineHook->backUpLength);
 
     for(int i=0;i<6;i++){
@@ -133,19 +133,19 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
         pstInlineHook->backUpFixLengthList[i] = lengthFixArm64(*currentOpcode);
         currentOpcode += 1; //GToad BUG
     }
-    
+
     return true;
 }
 
 /**
- * ÀûÓÃihookstub.sÖĞµÄshellcode¹¹Ôì×®£¬Ìø×ªµ½pstInlineHook->onCallBackº¯Êıºó£¬»Øµ÷ÀÏº¯Êı
- * @param  pstInlineHook inlinehookĞÅÏ¢
- * @return               inlinehook×®ÊÇ·ñ¹¹Ôì³É¹¦
+ * åˆ©ç”¨ihookstub.sä¸­çš„shellcodeæ„é€ æ¡©ï¼Œè·³è½¬åˆ°pstInlineHook->onCallBackå‡½æ•°åï¼Œå›è°ƒè€å‡½æ•°
+ * @param  pstInlineHook inlinehookä¿¡æ¯
+ * @return               inlinehookæ¡©æ˜¯å¦æ„é€ æˆåŠŸ
  */
 bool BuildStub(INLINE_HOOK_INFO* pstInlineHook)
 {
     bool bRet = false;
-    
+
     while(1)
     {
         if(pstInlineHook == NULL)
@@ -153,14 +153,14 @@ bool BuildStub(INLINE_HOOK_INFO* pstInlineHook)
             LOGI("pstInlineHook is null");
             break;
         }
-        
+
         void *p_shellcode_start_s = &_shellcode_start_s;
         void *p_shellcode_end_s = &_shellcode_end_s;
         void *p_hookstub_function_addr_s = &_hookstub_function_addr_s;
         void *p_old_function_addr_s = &_old_function_addr_s;
 
         size_t sShellCodeLength = p_shellcode_end_s - p_shellcode_start_s;
-        //mallocÒ»¶ÎĞÂµÄstub´úÂë
+        //mallocä¸€æ®µæ–°çš„stubä»£ç 
         void *pNewShellCode = malloc(sShellCodeLength);
         if(pNewShellCode == NULL)
         {
@@ -168,41 +168,41 @@ bool BuildStub(INLINE_HOOK_INFO* pstInlineHook)
             break;
         }
         memcpy(pNewShellCode, p_shellcode_start_s, sShellCodeLength);
-        //¸ü¸Ästub´úÂëÒ³ÊôĞÔ£¬¸Ä³É¿É¶Á¿ÉĞ´¿ÉÖ´ĞĞ
+        //æ›´æ”¹stubä»£ç é¡µå±æ€§ï¼Œæ”¹æˆå¯è¯»å¯å†™å¯æ‰§è¡Œ
         if(ChangePageProperty(pNewShellCode, sShellCodeLength) == false)
         {
             LOGI("change shell code page property fail.");
             break;
         }
 
-        //ÉèÖÃÌø×ªµ½Íâ²¿stubº¯ÊıÈ¥
+        //è®¾ç½®è·³è½¬åˆ°å¤–éƒ¨stubå‡½æ•°å»
         LOGI("_hookstub_function_addr_s : %lx",p_hookstub_function_addr_s);
         void **ppHookStubFunctionAddr = pNewShellCode + (p_hookstub_function_addr_s - p_shellcode_start_s);
         *ppHookStubFunctionAddr = pstInlineHook->onCallBack;
         LOGI("ppHookStubFunctionAddr : %lx",ppHookStubFunctionAddr);
         LOGI("*ppHookStubFunctionAddr : %lx",*ppHookStubFunctionAddr);
-        
-        //±¸·İÍâ²¿stubº¯ÊıÔËĞĞÍêºóÌø×ªµÄº¯ÊıµØÖ·Ö¸Õë£¬ÓÃÓÚÌî³äÀÏº¯ÊıµÄĞÂµØÖ·
+
+        //å¤‡ä»½å¤–éƒ¨stubå‡½æ•°è¿è¡Œå®Œåè·³è½¬çš„å‡½æ•°åœ°å€æŒ‡é’ˆï¼Œç”¨äºå¡«å……è€å‡½æ•°çš„æ–°åœ°å€
         pstInlineHook->ppOldFuncAddr  = pNewShellCode + (p_old_function_addr_s - p_shellcode_start_s);
-            
-        //Ìî³äshellcodeµØÖ·µ½hookinfoÖĞ£¬ÓÃÓÚ¹¹ÔìhookµãÎ»ÖÃµÄÌø×ªÖ¸Áî
+
+        //å¡«å……shellcodeåœ°å€åˆ°hookinfoä¸­ï¼Œç”¨äºæ„é€ hookç‚¹ä½ç½®çš„è·³è½¬æŒ‡ä»¤
         pstInlineHook->pStubShellCodeAddr = pNewShellCode;
 
-        
+
 
         bRet = true;
         break;
     }
-    
+
     return bRet;
 }
 
 
 /**
- * ¹¹Ôì²¢Ìî³äARMÏÂ32µÄÌø×ªÖ¸Áî£¬ĞèÒªÍâ²¿±£Ö¤¿É¶Á¿ÉĞ´£¬ÇÒpCurAddressÖÁÉÙ8¸öbytes´óĞ¡
- * @param  pCurAddress      µ±Ç°µØÖ·£¬Òª¹¹ÔìÌø×ªÖ¸ÁîµÄÎ»ÖÃ
- * @param  pJumpAddress     Ä¿µÄµØÖ·£¬Òª´Óµ±Ç°Î»ÖÃÌø¹ıÈ¥µÄµØÖ·
- * @return                  Ìø×ªÖ¸ÁîÊÇ·ñ¹¹Ôì³É¹¦
+ * æ„é€ å¹¶å¡«å……ARMä¸‹32çš„è·³è½¬æŒ‡ä»¤ï¼Œéœ€è¦å¤–éƒ¨ä¿è¯å¯è¯»å¯å†™ï¼Œä¸”pCurAddressè‡³å°‘8ä¸ªbyteså¤§å°
+ * @param  pCurAddress      å½“å‰åœ°å€ï¼Œè¦æ„é€ è·³è½¬æŒ‡ä»¤çš„ä½ç½®
+ * @param  pJumpAddress     ç›®çš„åœ°å€ï¼Œè¦ä»å½“å‰ä½ç½®è·³è¿‡å»çš„åœ°å€
+ * @return                  è·³è½¬æŒ‡ä»¤æ˜¯å¦æ„é€ æˆåŠŸ
  */
 bool BuildArmJumpCode(void *pCurAddress , void *pJumpAddress)
 {
@@ -215,13 +215,13 @@ bool BuildArmJumpCode(void *pCurAddress , void *pJumpAddress)
         {
             LOGI("address null.");
             break;
-        }    
-        LOGI("LIVE4.3.3");    
+        }
+        LOGI("LIVE4.3.3");
         //LDR PC, [PC, #-4]
         //addr
-        //LDR PC, [PC, #-4]¶ÔÓ¦µÄ»úÆ÷ÂëÎª£º0xE51FF004
-        //addrÎªÒªÌø×ªµÄµØÖ·¡£¸ÃÌø×ªÖ¸Áî·¶Î§Îª32Î»£¬¶ÔÓÚ32Î»ÏµÍ³À´Ëµ¼´ÎªÈ«µØÖ·Ìø×ª¡£
-        //»º´æ¹¹ÔìºÃµÄÌø×ªÖ¸Áî£¨ARMÏÂ32Î»£¬Á½ÌõÖ¸ÁîÖ»ĞèÒª8¸öbytes£©
+        //LDR PC, [PC, #-4]å¯¹åº”çš„æœºå™¨ç ä¸ºï¼š0xE51FF004
+        //addrä¸ºè¦è·³è½¬çš„åœ°å€ã€‚è¯¥è·³è½¬æŒ‡ä»¤èŒƒå›´ä¸º32ä½ï¼Œå¯¹äº32ä½ç³»ç»Ÿæ¥è¯´å³ä¸ºå…¨åœ°å€è·³è½¬ã€‚
+        //ç¼“å­˜æ„é€ å¥½çš„è·³è½¬æŒ‡ä»¤ï¼ˆARMä¸‹32ä½ï¼Œä¸¤æ¡æŒ‡ä»¤åªéœ€è¦8ä¸ªbytesï¼‰
         //BYTE szLdrPCOpcodes[8] = {0x04, 0xF0, 0x1F, 0xE5};
 
         //STP X1, X0, [SP, #-0x10]
@@ -230,15 +230,15 @@ bool BuildArmJumpCode(void *pCurAddress , void *pJumpAddress)
         //ADDR(64)
         //LDR X0, [SP, -0x8]
         BYTE szLdrPCOpcodes[24] = {0xe1, 0x03, 0x3f, 0xa9, 0x40, 0x00, 0x00, 0x58, 0x00, 0x00, 0x1f, 0xd6};
-        //½«Ä¿µÄµØÖ·¿½±´µ½Ìø×ªÖ¸Áî»º´æÎ»ÖÃ
+        //å°†ç›®çš„åœ°å€æ‹·è´åˆ°è·³è½¬æŒ‡ä»¤ç¼“å­˜ä½ç½®
         memcpy(szLdrPCOpcodes + 12, &pJumpAddress, 8);
         szLdrPCOpcodes[20] = 0xE0;
         szLdrPCOpcodes[21] = 0x83;
         szLdrPCOpcodes[22] = 0x5F;
         szLdrPCOpcodes[23] = 0xF8;
         LOGI("LIVE4.3.4");
-        
-        //½«¹¹ÔìºÃµÄÌø×ªÖ¸ÁîË¢½øÈ¥
+
+        //å°†æ„é€ å¥½çš„è·³è½¬æŒ‡ä»¤åˆ·è¿›å»
         memcpy(pCurAddress, szLdrPCOpcodes, 24);
         LOGI("LIVE4.3.5");
         //__flush_cache(*((uint32_t*)pCurAddress), 20);
@@ -254,11 +254,11 @@ bool BuildArmJumpCode(void *pCurAddress , void *pJumpAddress)
 
 
 /**
- * ¹¹Ôì±»inline hookµÄº¯ÊıÍ·£¬»¹Ô­Ô­º¯ÊıÍ·+Ôö¼ÓÌø×ª
- * ½öÊÇ¿½±´Ìø×ª¼´¿É£¬Í¬Ê±Ìî³ästub shellcodeÖĞµÄoldfunctionµØÖ·¼°hookinfoÀïÃæµÄoldº¯ÊıµØÖ·
- * Õâ¸öÊµÏÖÃ»ÓĞÖ¸ÁîĞŞ¸´¹¦ÄÜ£¬¼´ÊÇHOOKµÄÎ»ÖÃÖ¸Áî²»ÄÜÉæ¼°PCµÈĞèÒªÖØ¶¨ÏòÖ¸Áî
- * @param  pstInlineHook inlinehookĞÅÏ¢
- * @return               Ô­º¯Êı¹¹ÔìÊÇ·ñ³É¹¦
+ * æ„é€ è¢«inline hookçš„å‡½æ•°å¤´ï¼Œè¿˜åŸåŸå‡½æ•°å¤´+å¢åŠ è·³è½¬
+ * ä»…æ˜¯æ‹·è´è·³è½¬å³å¯ï¼ŒåŒæ—¶å¡«å……stub shellcodeä¸­çš„oldfunctionåœ°å€åŠhookinfoé‡Œé¢çš„oldå‡½æ•°åœ°å€
+ * è¿™ä¸ªå®ç°æ²¡æœ‰æŒ‡ä»¤ä¿®å¤åŠŸèƒ½ï¼Œå³æ˜¯HOOKçš„ä½ç½®æŒ‡ä»¤ä¸èƒ½æ¶‰åŠPCç­‰éœ€è¦é‡å®šå‘æŒ‡ä»¤
+ * @param  pstInlineHook inlinehookä¿¡æ¯
+ * @return               åŸå‡½æ•°æ„é€ æ˜¯å¦æˆåŠŸ
  */
 bool BuildOldFunction(INLINE_HOOK_INFO* pstInlineHook)
 {
@@ -278,8 +278,8 @@ bool BuildOldFunction(INLINE_HOOK_INFO* pstInlineHook)
             break;
         }
         LOGI("LIVE3.3");
-        
-        //8¸öbytes´æ·ÅÔ­À´µÄopcodes£¬ÁíÍâ8¸öbytes´æ·ÅÌø×ª»ØhookµãÏÂÃæµÄÌø×ªÖ¸Áî
+
+        //8ä¸ªbyteså­˜æ”¾åŸæ¥çš„opcodesï¼Œå¦å¤–8ä¸ªbyteså­˜æ”¾è·³è½¬å›hookç‚¹ä¸‹é¢çš„è·³è½¬æŒ‡ä»¤
         void * pNewEntryForOldFunction = malloc(200);
         if(pNewEntryForOldFunction == NULL)
         {
@@ -290,48 +290,48 @@ bool BuildOldFunction(INLINE_HOOK_INFO* pstInlineHook)
 
         pstInlineHook->pNewEntryForOldFunction = pNewEntryForOldFunction;
         LOGI("%x",pNewEntryForOldFunction);
-        
+
         if(ChangePageProperty(pNewEntryForOldFunction, 200) == false)
         {
             LOGI("change new entry page property fail.");
             break;
         }
         LOGI("LIVE3.5");
-        
-        fixLength = fixPCOpcodeArm(fixOpcodes, pstInlineHook); //°ÑµÚÈı²¿·ÖµÄÆğÊ¼µØÖ·´«¹ıÈ¥
+
+        fixLength = fixPCOpcodeArm(fixOpcodes, pstInlineHook); //æŠŠç¬¬ä¸‰éƒ¨åˆ†çš„èµ·å§‹åœ°å€ä¼ è¿‡å»
         memcpy(pNewEntryForOldFunction, fixOpcodes, fixLength);
         LOGI("LIVE3.6");
         //memcpy(pNewEntryForOldFunction, pstInlineHook->szbyBackupOpcodes, 8);
-        //Ìî³äÌø×ªÖ¸Áî
+        //å¡«å……è·³è½¬æŒ‡ä»¤
         if(BuildArmJumpCode(pNewEntryForOldFunction + fixLength, pstInlineHook->pHookAddr + pstInlineHook->backUpLength - 4) == false)
         {
             LOGI("build jump opcodes for new entry fail.");
             break;
         }
         LOGI("LIVE3.7");
-        //Ìî³äshellcodeÀïstubµÄ»Øµ÷µØÖ·
+        //å¡«å……shellcodeé‡Œstubçš„å›è°ƒåœ°å€
         *(pstInlineHook->ppOldFuncAddr) = pNewEntryForOldFunction;
         LOGI("LIVE3.8");
-        
+
         bRet = true;
         break;
     }
     LOGI("LIVE3.9");
-    
+
     return bRet;
 }
 
 
-    
+
 /**
- * ÔÚÒªHOOKµÄÎ»ÖÃ£¬¹¹ÔìÌø×ª£¬Ìø×ªµ½shellcode stubÖĞ
- * @param  pstInlineHook inlinehookĞÅÏ¢
- * @return               Ô­µØÌø×ªÖ¸ÁîÊÇ·ñ¹¹Ôì³É¹¦
+ * åœ¨è¦HOOKçš„ä½ç½®ï¼Œæ„é€ è·³è½¬ï¼Œè·³è½¬åˆ°shellcode stubä¸­
+ * @param  pstInlineHook inlinehookä¿¡æ¯
+ * @return               åŸåœ°è·³è½¬æŒ‡ä»¤æ˜¯å¦æ„é€ æˆåŠŸ
  */
 bool RebuildHookTarget(INLINE_HOOK_INFO* pstInlineHook)
 {
     bool bRet = false;
-    
+
     while(1)
     {
         LOGI("LIVE4.1");
@@ -341,14 +341,14 @@ bool RebuildHookTarget(INLINE_HOOK_INFO* pstInlineHook)
             break;
         }
         LOGI("LIVE4.2");
-        //ĞŞ¸ÄÔ­Î»ÖÃµÄÒ³ÊôĞÔ£¬±£Ö¤¿ÉĞ´
+        //ä¿®æ”¹åŸä½ç½®çš„é¡µå±æ€§ï¼Œä¿è¯å¯å†™
         if(ChangePageProperty(pstInlineHook->pHookAddr, 24) == false)
         {
             LOGI("change page property error.");
             break;
         }
         LOGI("LIVE4.3");
-        //Ìî³äÌø×ªÖ¸Áî
+        //å¡«å……è·³è½¬æŒ‡ä»¤
         if(BuildArmJumpCode(pstInlineHook->pHookAddr, pstInlineHook->pStubShellCodeAddr) == false)
         {
             LOGI("build jump opcodes for new entry fail.");
@@ -359,21 +359,21 @@ bool RebuildHookTarget(INLINE_HOOK_INFO* pstInlineHook)
         break;
     }
     LOGI("LIVE4.5");
-    
+
     return bRet;
 }
 
 
 /**
- * ARMÏÂµÄinlinehook
- * @param  pstInlineHook inlinehookĞÅÏ¢
- * @return               inlinehookÊÇ·ñÉèÖÃ³É¹¦
+ * ARMä¸‹çš„inlinehook
+ * @param  pstInlineHook inlinehookä¿¡æ¯
+ * @return               inlinehookæ˜¯å¦è®¾ç½®æˆåŠŸ
  */
 bool HookArm(INLINE_HOOK_INFO* pstInlineHook)
 {
     bool bRet = false;
     LOGI("HookArm()");
-    
+
     while(1)
     {
         //LOGI("pstInlineHook is null 1.");
@@ -385,45 +385,45 @@ bool HookArm(INLINE_HOOK_INFO* pstInlineHook)
         LOGI("LIVE1");
 
         //LOGI("Init Arm HookInfo fail 1.");
-        //µÚÁã²½£¬ÉèÖÃARMÏÂinline hookµÄ»ù´¡ĞÅÏ¢
+        //ç¬¬é›¶æ­¥ï¼Œè®¾ç½®ARMä¸‹inline hookçš„åŸºç¡€ä¿¡æ¯
         if(InitArmHookInfo(pstInlineHook) == false)
         {
             LOGI("Init Arm HookInfo fail.");
             break;
         }
         LOGI("LIVE2");
-        
+
         //LOGI("BuildStub fail 1.");
-        //µÚ¶ş²½£¬¹¹Ôìstub£¬¹¦ÄÜÊÇ±£´æ¼Ä´æÆ÷×´Ì¬£¬Í¬Ê±Ìø×ªµ½Ä¿±êº¯Êı£¬È»ºóÌø×ª»ØÔ­º¯Êı
-        //ĞèÒªÄ¿±êµØÖ·£¬·µ»ØstubµØÖ·£¬Í¬Ê±»¹ÓĞoldÖ¸Õë¸øºóĞøÌî³ä 
+        //ç¬¬äºŒæ­¥ï¼Œæ„é€ stubï¼ŒåŠŸèƒ½æ˜¯ä¿å­˜å¯„å­˜å™¨çŠ¶æ€ï¼ŒåŒæ—¶è·³è½¬åˆ°ç›®æ ‡å‡½æ•°ï¼Œç„¶åè·³è½¬å›åŸå‡½æ•°
+        //éœ€è¦ç›®æ ‡åœ°å€ï¼Œè¿”å›stubåœ°å€ï¼ŒåŒæ—¶è¿˜æœ‰oldæŒ‡é’ˆç»™åç»­å¡«å……
         if(BuildStub(pstInlineHook) == false)
         {
             LOGI("BuildStub fail.");
             break;
         }
         LOGI("LIVE3");
-        
+
         //LOGI("BuildOldFunction fail 1.");
-        //µÚËÄ²½£¬¸ºÔğÖØ¹¹Ô­º¯ÊıÍ·£¬¹¦ÄÜÊÇĞŞ¸´Ö¸Áî£¬¹¹ÔìÌø×ª»Øµ½Ô­µØÖ·ÏÂ
-        //ĞèÒªÔ­º¯ÊıµØÖ·
-        
+        //ç¬¬å››æ­¥ï¼Œè´Ÿè´£é‡æ„åŸå‡½æ•°å¤´ï¼ŒåŠŸèƒ½æ˜¯ä¿®å¤æŒ‡ä»¤ï¼Œæ„é€ è·³è½¬å›åˆ°åŸåœ°å€ä¸‹
+        //éœ€è¦åŸå‡½æ•°åœ°å€
+
         if(BuildOldFunction(pstInlineHook) == false)
         {
             LOGI("BuildOldFunction fail.");
             break;
         }
         LOGI("LIVE4");
-        
+
         //LOGI("RebuildHookAddress fail 1.");
-        //µÚÒ»²½£¬¸ºÔğÖØĞ´Ô­º¯ÊıÍ·£¬¹¦ÄÜÊÇÊµÏÖinline hookµÄ×îºóÒ»²½£¬¸ÄĞ´Ìø×ª
-        //ĞèÒªcacheflush£¬·ÀÖ¹±ÀÀ£
+        //ç¬¬ä¸€æ­¥ï¼Œè´Ÿè´£é‡å†™åŸå‡½æ•°å¤´ï¼ŒåŠŸèƒ½æ˜¯å®ç°inline hookçš„æœ€åä¸€æ­¥ï¼Œæ”¹å†™è·³è½¬
+        //éœ€è¦cacheflushï¼Œé˜²æ­¢å´©æºƒ
         if(RebuildHookTarget(pstInlineHook) == false)
         {
             LOGI("RebuildHookAddress fail.");
             break;
         }
         LOGI("LIVE5");
-        
+
         bRet = true;
         break;
     }
