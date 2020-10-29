@@ -19,6 +19,7 @@ created time: 2015-11-30
 
 #include "relocate.h"
 #include "include/inlineHook.h"
+#include "log.h"
 
 #ifndef PAGE_SIZE
 #define PAGE_SIZE 4096
@@ -220,7 +221,7 @@ static bool isExecutableAddr(uint32_t addr)
 static struct inlineHookItem *findInlineHookItem(uint32_t target_addr)
 {
 	int i;
-
+	LOG_DEBUG("findInlineHookItem:size=%d",info.size);
 	for (i = 0; i < info.size; ++i) {
 		if (info.item[i].target_addr == target_addr) {
 			return &info.item[i];
