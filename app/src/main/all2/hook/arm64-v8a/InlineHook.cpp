@@ -1,4 +1,5 @@
 #include <vector>
+#include <dlfcn.h>
 
 #ifndef PAGE_SIZE
 #define PAGE_SIZE 4096
@@ -15,6 +16,7 @@
 extern "C"
 {
 #include "Ihook.h"
+#include "hooktest.h"
 }
 
 void ModifyIBored() __attribute__((constructor));
@@ -120,8 +122,10 @@ void ModifyIBored()
 
     int target_offset = 0x600; //*想Hook的目标在目标so中的偏移*
 
-    void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libhellojni.so"); //目标so的名称
-
+    void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libtarget.so"); //目标so的名称
+    if(pModuleBaseAddr == 0){
+        pModuleBaseAddr = dlopen("libtarget.so", RTLD_NOW);
+    }
     if(pModuleBaseAddr == 0)
     {
         LOGI("get module base error.");

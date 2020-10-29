@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.4.1)
 # Gradle automatically packages shared libraries with your APK.
 
 enable_language(ASM)
-
+include_directories(./include)
 file(GLOB allCpp ${CMAKE_ANDROID_ARCH_ABI}/*.*)
 
 add_library( # Sets the name of the library.

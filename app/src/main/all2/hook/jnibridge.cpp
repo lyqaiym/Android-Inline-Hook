@@ -14,5 +14,6 @@ JNIEXPORT void JNICALL
 Java_com_example_hook_NativeTry_testHook(JNIEnv *env, jclass clazz, jobject obj) {
     LOG_DEBUG("testHook");
 //    test();
+    ModifyIBored();
 //    target_foo();
 }
