@@ -1,8 +1,10 @@
 #include <sys/types.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <bits/sysconf.h>
 #include <sys/mman.h>
 #include "hook_inline.h"
+#include "log.h"
 
 long get_module_addr(pid_t pid, const char *module_name)
 {
@@ -26,7 +28,7 @@ long get_module_addr(pid_t pid, const char *module_name)
         }
     }
     fclose(fp);
-    printf("library :%s %lx-%lx, pid : %d\n", module_name, addr_start, addr_end, pid);
+    LOG_DEBUG("library :%s %lx-%lx, pid : %d\n", module_name, addr_start, addr_end, pid);
     return addr_start;
 }
 

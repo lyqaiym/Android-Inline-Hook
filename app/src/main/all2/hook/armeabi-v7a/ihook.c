@@ -543,7 +543,7 @@ bool BuildOldFunctionThumb(INLINE_HOOK_INFO* pstInlineHook)
 bool RebuildHookTarget(INLINE_HOOK_INFO* pstInlineHook)
 {
 	bool bRet = false;
-
+	LOGI("RebuildHookTarget");
 	while(1)
 	{
 		if(pstInlineHook == NULL)
@@ -573,7 +573,7 @@ bool RebuildHookTarget(INLINE_HOOK_INFO* pstInlineHook)
 bool RebuildHookTargetThumb(INLINE_HOOK_INFO* pstInlineHook)
 {
 	bool bRet = false;
-
+	LOGI("RebuildHookTargetThumb");
 	while(1)
 	{
 		if(pstInlineHook == NULL)

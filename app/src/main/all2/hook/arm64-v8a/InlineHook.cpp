@@ -122,6 +122,9 @@ void ModifyIBored()
 
 //    int target_offset = 0x600; //*想Hook的目标在目标so中的偏移*
     int target_offset = 0x65c; //*想Hook的目标在目标so中的偏移*
+    //插入在[INFO] finally, c2 is 2 之后
+    //sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/aarch64-linux-android/bin/objdump -d libtarget.so >tag.txt
+    target_offset = 0x6a0; //*想Hook的目标在目标so中的偏移*
 
     void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libtarget.so"); //目标so的名称
     if(pModuleBaseAddr == 0){
