@@ -5,13 +5,13 @@
 #define PAGE_SIZE 4096
 #endif
 
-#define PAGE_START(addr)	(~(PAGE_SIZE - 1) & (addr))
-#define SET_BIT0(addr)		(addr | 1)
-#define CLEAR_BIT0(addr)	(addr & 0xFFFFFFFE)
-#define TEST_BIT0(addr)		(addr & 1)
+#define PAGE_START(addr)    (~(PAGE_SIZE - 1) & (addr))
+#define SET_BIT0(addr)        (addr | 1)
+#define CLEAR_BIT0(addr)    (addr & 0xFFFFFFFE)
+#define TEST_BIT0(addr)        (addr & 1)
 
-#define ACTION_ENABLE	0
-#define ACTION_DISABLE	1
+#define ACTION_ENABLE    0
+#define ACTION_DISABLE    1
 
 extern "C"
 {
@@ -22,7 +22,7 @@ extern "C"
 //void ModifyIBored() __attribute__((constructor));
 //void before_main() __attribute__((constructor));
 
-typedef std::vector<INLINE_HOOK_INFO*> InlineHookInfoPVec;
+typedef std::vector<INLINE_HOOK_INFO *> InlineHookInfoPVec;
 static InlineHookInfoPVec gs_vecInlineHookInfo;     //管理HOOK点
 
 void before_main() {
@@ -35,22 +35,19 @@ void before_main() {
  * @param  onCallBack    要插入的回调函数
  * @return               inlinehook是否设置成功（已经设置过，重复设置返回false）
  */
-bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *))
-{
+bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *)) {
     bool bRet = false;
     LOGI("InlineHook");
 
-    if(pHookAddr == NULL || onCallBack == NULL)
-    {
+    if (pHookAddr == NULL || onCallBack == NULL) {
         return bRet;
     }
 
-    INLINE_HOOK_INFO* pstInlineHook = new INLINE_HOOK_INFO();
+    INLINE_HOOK_INFO *pstInlineHook = new INLINE_HOOK_INFO();
     pstInlineHook->pHookAddr = pHookAddr;
     pstInlineHook->onCallBack = onCallBack;
 
-    if(HookArm(pstInlineHook) == false)
-    {
+    if (HookArm(pstInlineHook) == false) {
         LOGI("HookArm fail.");
         delete pstInlineHook;
         return bRet;
@@ -66,31 +63,25 @@ bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *))
  * @param  pHookAddr 要取消inline hook的位置
  * @return           是否取消成功（不存在返回取消失败）
  */
-bool UnInlineHook(void *pHookAddr)
-{
+bool UnInlineHook(void *pHookAddr) {
     bool bRet = false;
 
-    if(pHookAddr == NULL)
-    {
+    if (pHookAddr == NULL) {
         return bRet;
     }
 
     InlineHookInfoPVec::iterator itr = gs_vecInlineHookInfo.begin();
     InlineHookInfoPVec::iterator itrend = gs_vecInlineHookInfo.end();
 
-    for (; itr != itrend; ++itr)
-    {
-        if (pHookAddr == (*itr)->pHookAddr)
-        {
-            INLINE_HOOK_INFO* pTargetInlineHookInfo = (*itr);
+    for (; itr != itrend; ++itr) {
+        if (pHookAddr == (*itr)->pHookAddr) {
+            INLINE_HOOK_INFO *pTargetInlineHookInfo = (*itr);
 
             gs_vecInlineHookInfo.erase(itr);
-            if(pTargetInlineHookInfo->pStubShellCodeAddr != NULL)
-            {
+            if (pTargetInlineHookInfo->pStubShellCodeAddr != NULL) {
                 delete pTargetInlineHookInfo->pStubShellCodeAddr;
             }
-            if(pTargetInlineHookInfo->ppOldFuncAddr)
-            {
+            if (pTargetInlineHookInfo->ppOldFuncAddr) {
                 delete *(pTargetInlineHookInfo->ppOldFuncAddr);
             }
             delete pTargetInlineHookInfo;
@@ -108,36 +99,26 @@ bool UnInlineHook(void *pHookAddr)
  */
 void EvilHookStubFunctionForIBored(user_pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
 {
-    LOGI("In Evil Hook Stub.");
-    //regs->uregs[2] = 0x333; //regs->uregs[0]=0x333
-    regs->regs[9]=0x333;
+    LOGI("In Evil Hook Stub.r9=%ld", regs->regs[9]);
+    regs->regs[9] = 0x3;
 }
 
 /**
  * 针对IBored应用，通过inline hook改变游戏逻辑的测试函数
  */
-void ModifyIBored()
-{
+void ModifyIBored(char *__filename, int target_offset) {
     LOGI("In IHook's ModifyIBored.");
-
-//    int target_offset = 0x600; //*想Hook的目标在目标so中的偏移*
-    int target_offset = 0x65c; //*想Hook的目标在目标so中的偏移*
-    //插入在[INFO] finally, c2 is 2 之后
-    //sdk/ndk/20.0.5594570/toolchains/llvm/prebuilt/darwin-x86_64/aarch64-linux-android/bin/objdump -d libtarget.so >tag.txt
-    target_offset = 0x6a0; //*想Hook的目标在目标so中的偏移*
-
-    void* pModuleBaseAddr = GetModuleBaseAddr(-1, "libtarget.so"); //目标so的名称
-    if(pModuleBaseAddr == 0){
-        pModuleBaseAddr = dlopen("libtarget.so", RTLD_NOW);
+    void *pModuleBaseAddr = GetModuleBaseAddr(-1, __filename); //目标so的名称
+    if (pModuleBaseAddr == 0) {
+        pModuleBaseAddr = dlopen(__filename, RTLD_NOW);
     }
-    if(pModuleBaseAddr == 0)
-    {
+    if (pModuleBaseAddr == 0) {
         LOGI("get module base error.");
         return;
     }
 
-    uint64_t uiHookAddr = (uint64_t)pModuleBaseAddr + target_offset; //真实Hook的内存地址
+    uint64_t uiHookAddr = (uint64_t) pModuleBaseAddr + target_offset; //真实Hook的内存地址
 
 
-    InlineHook((void*)(uiHookAddr), EvilHookStubFunctionForIBored); //*第二个参数就是Hook想要插入的功能处理函数*
+    InlineHook((void *) (uiHookAddr), EvilHookStubFunctionForIBored); //*第二个参数就是Hook想要插入的功能处理函数*
 }

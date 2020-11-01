@@ -411,6 +411,7 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 	//trampoline_instructions[trampoline_pos++] == 0xf85f83e0; // ldr x0, [sp, #-0x8] recover the x0 register
 	LOGI("THE ARM64 OPCODE IS %x",instruction);
 	type = getTypeInArm64(instruction);
+	LOGI("fixPCOpcodeArm64:type=%d",type);
 	//type = getTypeInArm(instruction); //判断该arm指令的种类
 
 	if (type == B_COND_ARM64) {
@@ -497,11 +498,11 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 			LOGI("NEG");
 			value = (pc & 0xfff) - 4096 * (0x1fffff - imm21 + 1);
 		}
-		LOGI("pc    : %lx",pc);
-		LOGI("imm21 : %x",imm21);
-		LOGI("value : %lx",value);
-		LOGI("valueh : %x",(uint32_t)(value >> 32));
-		LOGI("valuel : %x",(uint32_t)(value & 0xffffffff));
+		LOGI("fix pc    : %lx",pc);
+		LOGI("fix imm21 : %x",imm21);
+		LOGI("fix value : %lx",value);
+		LOGI("fix valueh : %x",(uint32_t)(value >> 32));
+		LOGI("fix valuel : %x",(uint32_t)(value & 0xffffffff));
 
 		rd = instruction & 0x1f;
 		trampoline_instructions[trampoline_pos++] = 0x58000040+rd; // ldr rd, 8

@@ -1,0 +1,124 @@
+
+app\build\intermediates\cmake\debug\obj\arm64-v8a\libtarget.so:     file format elf64-littleaarch64
+
+
+Disassembly of section .plt:
+
+00000000000005d0 <__cxa_finalize@plt-0x20>:
+ 5d0:	a9bf7bf0 	stp	x16, x30, [sp,#-16]!
+ 5d4:	90000090 	adrp	x16, 10000 <note_end+0xf768>
+ 5d8:	f947ea11 	ldr	x17, [x16,#4048]
+ 5dc:	913f4210 	add	x16, x16, #0xfd0
+ 5e0:	d61f0220 	br	x17
+ 5e4:	d503201f 	nop
+ 5e8:	d503201f 	nop
+ 5ec:	d503201f 	nop
+
+00000000000005f0 <__cxa_finalize@plt>:
+ 5f0:	90000090 	adrp	x16, 10000 <note_end+0xf768>
+ 5f4:	f947ee11 	ldr	x17, [x16,#4056]
+ 5f8:	913f6210 	add	x16, x16, #0xfd8
+ 5fc:	d61f0220 	br	x17
+
+0000000000000600 <__stack_chk_fail@plt>:
+ 600:	90000090 	adrp	x16, 10000 <note_end+0xf768>
+ 604:	f947f211 	ldr	x17, [x16,#4064]
+ 608:	913f8210 	add	x16, x16, #0xfe0
+ 60c:	d61f0220 	br	x17
+
+0000000000000610 <__android_log_print@plt>:
+ 610:	90000090 	adrp	x16, 10000 <note_end+0xf768>
+ 614:	f947f611 	ldr	x17, [x16,#4072]
+ 618:	913fa210 	add	x16, x16, #0xfe8
+ 61c:	d61f0220 	br	x17
+
+0000000000000620 <__cxa_atexit@plt>:
+ 620:	90000090 	adrp	x16, 10000 <note_end+0xf768>
+ 624:	f947fa11 	ldr	x17, [x16,#4080]
+ 628:	913fc210 	add	x16, x16, #0xff0
+ 62c:	d61f0220 	br	x17
+
+Disassembly of section .text:
+
+0000000000000630 <__on_dlclose>:
+ 630:	b0000080 	adrp	x0, 11000 <__dso_handle>
+ 634:	91000000 	add	x0, x0, #0x0
+ 638:	17ffffee 	b	5f0 <__cxa_finalize@plt>
+
+000000000000063c <__emutls_unregister_key>:
+ 63c:	d65f03c0 	ret
+
+0000000000000640 <__on_dlclose_late>:
+ 640:	17ffffff 	b	63c <__emutls_unregister_key>
+
+0000000000000644 <__atexit_handler_wrapper>:
+ 644:	b4000040 	cbz	x0, 64c <__atexit_handler_wrapper+0x8>
+ 648:	d61f0000 	br	x0
+ 64c:	d65f03c0 	ret
+
+0000000000000650 <atexit>:
+ 650:	90000008 	adrp	x8, 0 <__cxa_finalize@plt-0x5f0>
+ 654:	91191108 	add	x8, x8, #0x644
+ 658:	b0000082 	adrp	x2, 11000 <__dso_handle>
+ 65c:	91000042 	add	x2, x2, #0x0
+ 660:	aa0003e1 	mov	x1, x0
+ 664:	aa0803e0 	mov	x0, x8
+ 668:	17ffffee 	b	620 <__cxa_atexit@plt>
+
+000000000000066c <target_foo>:
+ 66c:	d10103ff 	sub	sp, sp, #0x40
+ 670:	a9037bfd 	stp	x29, x30, [sp,#48]
+ 674:	9100c3fd 	add	x29, sp, #0x30
+ 678:	d53bd048 	mrs	x8, tpidr_el0
+ 67c:	f9401508 	ldr	x8, [x8,#40]
+ 680:	f81f83a8 	stur	x8, [x29,#-8]
+ 684:	528002c9 	mov	w9, #0x16                  	// #22
+ 688:	b81f03a9 	stur	w9, [x29,#-16]
+ 68c:	52860729 	mov	w9, #0x3039                	// #12345
+ 690:	b81f43a9 	stur	w9, [x29,#-12]
+ 694:	b85f43a3 	ldur	w3, [x29,#-12]
+ 698:	90000001 	adrp	x1, 0 <__cxa_finalize@plt-0x5f0>
+ 69c:	911d3021 	add	x1, x1, #0x74c
+ 6a0:	90000002 	adrp	x2, 0 <__cxa_finalize@plt-0x5f0>
+ 6a4:	911d5c42 	add	x2, x2, #0x757
+ 6a8:	320007e0 	orr	w0, wzr, #0x3
+ 6ac:	d10033a4 	sub	x4, x29, #0xc
+ 6b0:	97ffffd8 	bl	610 <__android_log_print@plt>
+ 6b4:	b85f43a9 	ldur	w9, [x29,#-12]
+ 6b8:	b85f03a3 	ldur	w3, [x29,#-16]
+ 6bc:	6b030129 	subs	w9, w9, w3
+ 6c0:	b81ec3a0 	stur	w0, [x29,#-20]
+ 6c4:	b9001be9 	str	w9, [sp,#24]
+ 6c8:	5400018d 	b.le	6f8 <target_foo+0x8c>
+ 6cc:	14000001 	b	6d0 <target_foo+0x64>
+ 6d0:	b85f43a3 	ldur	w3, [x29,#-12]
+ 6d4:	90000001 	adrp	x1, 0 <__cxa_finalize@plt-0x5f0>
+ 6d8:	911d3021 	add	x1, x1, #0x74c
+ 6dc:	90000002 	adrp	x2, 0 <__cxa_finalize@plt-0x5f0>
+ 6e0:	911dd042 	add	x2, x2, #0x774
+ 6e4:	320007e0 	orr	w0, wzr, #0x3
+ 6e8:	d10033a4 	sub	x4, x29, #0xc
+ 6ec:	97ffffc9 	bl	610 <__android_log_print@plt>
+ 6f0:	b90017e0 	str	w0, [sp,#20]
+ 6f4:	1400000b 	b	720 <target_foo+0xb4>
+ 6f8:	b85f43a3 	ldur	w3, [x29,#-12]
+ 6fc:	90000001 	adrp	x1, 0 <__cxa_finalize@plt-0x5f0>
+ 700:	911d3021 	add	x1, x1, #0x74c
+ 704:	90000002 	adrp	x2, 0 <__cxa_finalize@plt-0x5f0>
+ 708:	911e4442 	add	x2, x2, #0x791
+ 70c:	320007e0 	orr	w0, wzr, #0x3
+ 710:	d10033a4 	sub	x4, x29, #0xc
+ 714:	97ffffbf 	bl	610 <__android_log_print@plt>
+ 718:	b90013e0 	str	w0, [sp,#16]
+ 71c:	14000001 	b	720 <target_foo+0xb4>
+ 720:	d53bd048 	mrs	x8, tpidr_el0
+ 724:	f9401508 	ldr	x8, [x8,#40]
+ 728:	f85f83a9 	ldur	x9, [x29,#-8]
+ 72c:	eb090108 	subs	x8, x8, x9
+ 730:	f90007e8 	str	x8, [sp,#8]
+ 734:	540000a1 	b.ne	748 <target_foo+0xdc>
+ 738:	14000001 	b	73c <target_foo+0xd0>
+ 73c:	a9437bfd 	ldp	x29, x30, [sp,#48]
+ 740:	910103ff 	add	sp, sp, #0x40
+ 744:	d65f03c0 	ret
+ 748:	97ffffae 	bl	600 <__stack_chk_fail@plt>
