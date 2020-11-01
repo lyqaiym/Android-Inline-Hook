@@ -151,3 +151,17 @@ void ModifyIBored(char* __filename,int target_offset) {
 
     InlineHook((void *) (uiHookAddr), EvilHookStubFunctionForIBored); //*第二个参数就是Hook想要插入的功能处理函数*
 }
+
+bool UnInlineHook(char *__filename, int target_offset){
+    LOGI("UnInlineHook ModifyIBored.");
+    void *pModuleBaseAddr = GetModuleBaseAddr(-1, __filename); //目标so的名称
+    if (pModuleBaseAddr == 0) {
+        LOGI("get module base error.");
+        return false;
+    }
+
+    uint64_t uiHookAddr = (uint64_t) pModuleBaseAddr + target_offset; //真实Hook的内存地址
+    LOGI("UnInlineHook:uiHookAddr=%ld",uiHookAddr);
+    UnInlineHook((void *)uiHookAddr);
+    return true;
+}
