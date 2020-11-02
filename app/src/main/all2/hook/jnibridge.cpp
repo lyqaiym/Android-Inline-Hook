@@ -23,13 +23,13 @@ Java_com_example_hook_NativeTry_testHook(JNIEnv *env, jclass clazz, jobject obj)
     LOG_DEBUG("testHook_32");
     //    E:\develop\sdk\ndk\21.1.6352462\toolchains\arm-linux-androideabi-4.9\prebuilt\windows-x86_64\bin\arm-linux-androideabi-objdump.exe -d
 //    app\build\intermediates\cmake\debug\obj\armeabi-v7a\libtarget.so
-//    > app\src\main\all2\hook\li btarget_v7.txt
+//    > app\src\main\all2\hook\libtarget_v7.txt
 target_offset = 0x7c0;
 #elif defined(__aarch64__)
     LOG_DEBUG("testHook_64");
 //    E:\develop\sdk\ndk\21.1.6352462\toolchains\aarch64-linux-android-4.9\prebuilt\windows-x86_64\bin\aarch64-linux-android-objdump.exe -d
 //    app\build\intermediates\cmake\debug\obj\arm64-v8a\libtarget.so
-//    > app\src\main\all2\hook\libt arget_v64.txt
+//    > app\src\main\all2\hook\libtarget_v64.txt
     target_offset = 0x690;
 #endif
     ModifyIBored("libtarget.so", target_offset);
