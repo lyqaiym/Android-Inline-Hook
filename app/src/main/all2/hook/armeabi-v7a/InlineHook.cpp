@@ -114,7 +114,7 @@ void EvilHookStubFunctionForIBored(pt_regs *regs) //参数regs就是指向栈上
     LOGI("In Evil Hook Stub.r0=%ld,r1=%ld",r1, r2);
     regs->uregs[1] = 0x3;
 }
-
+bool is_target_thumb = true; //*目标是否是thumb模式？*
 /**
  * 针对IBored应用，通过inline hook改变游戏逻辑的测试函数
  */
@@ -129,7 +129,7 @@ void ModifyIBored(char* __filename,int target_offset) {
     */
 
     //inline hook test3 thumb-2 hook
-    bool is_target_thumb = true; //*目标是否是thumb模式？*
+
 
     void *pModuleBaseAddr = GetModuleBaseAddr(-1, __filename); //目标so的名称
     if (pModuleBaseAddr == 0) {
@@ -161,7 +161,12 @@ bool UnInlineHook(char *__filename, int target_offset){
     }
 
     uint64_t uiHookAddr = (uint64_t) pModuleBaseAddr + target_offset; //真实Hook的内存地址
+    if (is_target_thumb) { //之所以人来判断那是因为Native Hook之前肯定是要逆向分析一下的，那时候就能知道是哪种模式。而且自动识别arm和thumb比较麻烦。
+        uiHookAddr++;
+        LOGI("UnInlineHook is %X in thumb mode", uiHookAddr);
+    }
     LOGI("UnInlineHook:uiHookAddr=%ld",uiHookAddr);
-    UnInlineHook((void *)uiHookAddr);
+    bool un=UnInlineHook((void *)uiHookAddr);
+    LOGI("UnInlineHook:un=%d",un);
     return true;
 }

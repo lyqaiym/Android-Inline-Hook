@@ -145,12 +145,6 @@ bool InitThumbHookInfo(INLINE_HOOK_INFO* pstInlineHook)
 		pstInlineHook->backUpFixLengthList[i] = -1;
 	}
 
-	if(pstInlineHook == NULL)
-	{
-		LOGI("pstInlineHook is null");
-		return bRet;
-	}
-
 	uint16_t *p11;
 
 	//判断最后由(pHookAddr-1)[10:11]组成的thumb命令是不是thumb32，
