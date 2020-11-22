@@ -37,12 +37,20 @@ void before_main() {
  */
 bool InlineHook(void *pHookAddr, void (*onCallBack)(struct user_pt_regs *)) {
     bool bRet = false;
-    LOGI("InlineHook");
+    LOGI("InlineHook:pHookAddr=%p",pHookAddr);
 
     if (pHookAddr == NULL || onCallBack == NULL) {
         return bRet;
     }
-
+    unsigned long ulPageSize = sysconf(_SC_PAGESIZE); //得到页的大小
+    int iProtect = PROT_READ | PROT_WRITE | PROT_EXEC;
+    unsigned long ulNewPageStartAddress = (unsigned long)(pHookAddr) & ~(ulPageSize - 1);
+    int iRet = mprotect((void*)ulNewPageStartAddress, ulPageSize, iProtect);
+    if(-1 == iRet)
+    {
+        LOGI("InlineHook:mprotect error:%s", strerror(errno));
+        return bRet;
+    }
     INLINE_HOOK_INFO *pstInlineHook = new INLINE_HOOK_INFO();
     pstInlineHook->pHookAddr = pHookAddr;
     pstInlineHook->onCallBack = onCallBack;

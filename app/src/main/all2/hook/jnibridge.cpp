@@ -35,7 +35,7 @@ void targetCall(user_pt_regs *regs) //参数regs就是指向栈上的一个数�
 }
 #endif
 
-
+int hook1 = 0;
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_hook_NativeTry_testTargetHook(JNIEnv *env, jclass clazz, jobject obj) {
@@ -55,9 +55,12 @@ Java_com_example_hook_NativeTry_testTargetHook(JNIEnv *env, jclass clazz, jobjec
 //    > app\src\main\all2\hook\libtarget_v64.txt
     target_offset = 0x690;
 #endif
-    ModifyIBored("libtarget.so", target_offset,targetCall);
     LOG_DEBUG("foo1");
     foo();
+    if (hook1 == 0) {
+        hook1 = 1;
+        ModifyIBored("libtarget.so", target_offset, targetCall);
+    }
 //    UnInlineHook("libtarget.so",target_offset);
     LOG_DEBUG("foo2");
     foo();
@@ -74,11 +77,15 @@ void libcCall(pt_regs *regs) //参数regs就是指向栈上的一个数据结构
 }
 
 #elif defined(__aarch64__)
+
 void libcCall(user_pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
 {
-    LOGI("libcCall.r9=%ld", regs->regs[9]);
-    regs->regs[9] = 0x3;
+    long r1 = regs->regs[0];
+    long r2 = regs->regs[1];
+    LOGI("libcCall.r1=%ld,r2=%ld", r1, r2);
+    regs->regs[1] = 0x2;
 }
+
 #endif
 
 //32 位 小米9手机的libc
@@ -89,10 +96,11 @@ void libcCall(user_pt_regs *regs) //参数regs就是指向栈上的一个数据�
 
 //64 位 小米9手机的libc
 //adb pull /apex/com.android.runtime/lib64/bionic/libc.so ./libc64.so
-//00090b2e <div>:
-//90b2e:	b570      	push	{r4, r5, r6, lr}
-//90b30:	4604      	mov	r4, r0
-
+//00000000000bff88 <div>:
+//bff88:	1ac10c08 	sdiv	w8, w0, w1
+//bff8c:	7100001f 	cmp	w0, #0x0
+//bff90:	1b018109 	msub	w9, w8, w1, w0
+int hook2 = 0;
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_hook_NativeTry_testLibcHook(JNIEnv *env, jclass clazz) {
@@ -106,7 +114,10 @@ Java_com_example_hook_NativeTry_testLibcHook(JNIEnv *env, jclass clazz) {
     target_offset = 0xbff90;
 #endif
     div_t div1 = div(8, 3);  //求8除以3的商和余数
-    ModifyIBored("libc.so", target_offset,libcCall);
+    if (hook2 == 0) {
+        hook2 = 1;
+        ModifyIBored("libc.so", target_offset, libcCall);
+    }
     div_t div2 = div(8, 3);  //求8除以3的商和余数,变成除以2
     LOG_DEBUG("testLibc:q1=%d,r1=%d,q2=%d,r2=%d", div1.quot, div1.rem, div2.quot, div2.rem);
 }
