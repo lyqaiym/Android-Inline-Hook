@@ -115,13 +115,6 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
     }
     LOGI("pstInlineHook->szbyBackupOpcodes is at %x",pstInlineHook->szbyBackupOpcodes);
 
-
-    if(pstInlineHook == NULL)
-    {
-        LOGI("pstInlineHook is null");
-        return bRet;
-    }
-
     pstInlineHook->backUpLength = 24;
 
     memcpy(pstInlineHook->szbyBackupOpcodes, pstInlineHook->pHookAddr, pstInlineHook->backUpLength);

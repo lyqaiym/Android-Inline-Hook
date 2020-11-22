@@ -1,3 +1,4 @@
 <resources>
-    <item name="bt_test_hook" type="id" />
+    <item name="bt_test_target_hook" type="id" />
+    <item name="bt_test_libc_hook" type="id" />
 </resources>

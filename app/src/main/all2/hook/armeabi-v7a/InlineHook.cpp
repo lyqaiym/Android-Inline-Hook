@@ -102,23 +102,11 @@ bool UnInlineHook(void *pHookAddr) {
     return bRet;
 }
 
-/**
- * 用户自定义的stub函数，嵌入在hook点中，可直接操作寄存器等改变游戏逻辑操作
- * 这里将R0寄存器锁定为0x333，一个远大于30的值
- * @param regs 寄存器结构，保存寄存器当前hook点的寄存器信息
- */
-void EvilHookStubFunctionForIBored(pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
-{
-    long r1 =regs->uregs[1];
-    long r2 =regs->uregs[2];
-    LOGI("In Evil Hook Stub.r0=%ld,r1=%ld",r1, r2);
-    regs->uregs[1] = 0x3;
-}
 bool is_target_thumb = true; //*目标是否是thumb模式？*
 /**
  * 针对IBored应用，通过inline hook改变游戏逻辑的测试函数
  */
-void ModifyIBored(char* __filename,int target_offset) {
+void ModifyIBored(char* __filename,int target_offset,callback callback1) {
     LOGI("In IHook's ModifyIBored.");
 
     /*
@@ -149,7 +137,7 @@ void ModifyIBored(char* __filename,int target_offset) {
         LOGI("uiHookAddr is %X in arm mode", uiHookAddr);
     }
 
-    InlineHook((void *) (uiHookAddr), EvilHookStubFunctionForIBored); //*第二个参数就是Hook想要插入的功能处理函数*
+    InlineHook((void *) (uiHookAddr), callback1); //*第二个参数就是Hook想要插入的功能处理函数*
 }
 
 bool UnInlineHook(char *__filename, int target_offset){

@@ -7,13 +7,23 @@
     tools:context=".MainActivity">
 
     <Button
-        android:id="@id/bt_test_hook"
+        android:id="@id/bt_test_target_hook"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
-        android:text="Test Hook"
+        android:text="Test Target Hook"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@id/bt_test_libc_hook"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="Test Libc Hook"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bt_test_target_hook" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

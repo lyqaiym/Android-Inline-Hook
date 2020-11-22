@@ -14,11 +14,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Example of a call to a native method
-        final Button bt_testStr = findViewById(R.id.bt_test_hook);
+        final Button bt_testStr = findViewById(R.id.bt_test_target_hook);
         bt_testStr.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NativeTry.testHook();
+                NativeTry.testTargetHook();
+            }
+        });
+        final Button bt_test_libc_hook = findViewById(R.id.bt_test_libc_hook);
+        bt_test_libc_hook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NativeTry.testLibcHook();
             }
         });
     }
