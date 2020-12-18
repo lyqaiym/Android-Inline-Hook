@@ -19,11 +19,12 @@ typedef void (*target_foo)(void);
  * @param regs 寄存器结构，保存寄存器当前hook点的寄存器信息
  */
 #if defined(__arm__)
+
 void targetCall(pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
 {
-    long r1 =regs->uregs[1];
-    long r2 =regs->uregs[2];
-    LOGI("targetCall.r0=%ld,r1=%ld",r1, r2);
+    long r1 = regs->uregs[1];
+    long r2 = regs->uregs[2];
+    LOGI("targetCall.r0=%ld,r1=%ld", r1, r2);
     regs->uregs[1] = 0x3;
 }
 
@@ -70,9 +71,9 @@ Java_com_example_hook_NativeTry_testTargetHook(JNIEnv *env, jclass clazz, jobjec
 
 void libcCall(pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
 {
-    long r1 =regs->uregs[1];
-    long r2 =regs->uregs[2];
-    LOGI("libcCall.r1=%ld,r2=%ld",r1, r2);
+    long r1 = regs->uregs[1];
+    long r2 = regs->uregs[2];
+    LOGI("libcCall.r1=%ld,r2=%ld", r1, r2);
     regs->uregs[2] = 0x2;
 }
 
@@ -120,4 +121,24 @@ Java_com_example_hook_NativeTry_testLibcHook(JNIEnv *env, jclass clazz) {
     }
     div_t div2 = div(8, 3);  //求8除以3的商和余数,变成除以2
     LOG_DEBUG("testLibc:q1=%d,r1=%d,q2=%d,r2=%d", div1.quot, div1.rem, div2.quot, div2.rem);
+}
+
+void libart_call2(pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
+{
+    LOGI("libart_call2");
+    long r0 = regs->uregs[0];
+    long r5 = regs->uregs[5];
+    long r7 = regs->uregs[7];
+    if (r0 ==0) {
+        regs->uregs[0] = regs->uregs[7] + 20;
+    }
+    LOGI("libart_call2.r0=%ld,r5=%ld,r7=%ld", r0, r5, r7);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+Java_com_example_hook_NativeTry_testLibArtHook(JNIEnv *env, jclass clazz) {
+    dlopen("libart.so", RTLD_NOW);
+    int target_offset = 0x18d2f0;
+    ModifyIBored("libart.so", target_offset, libart_call2);
 }

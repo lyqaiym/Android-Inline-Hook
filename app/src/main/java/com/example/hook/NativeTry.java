@@ -14,4 +14,6 @@ public class NativeTry {
     public static native void testTargetHook();
 
     public static native void testLibcHook();
+
+    public static native void testLibArtHook();
 }

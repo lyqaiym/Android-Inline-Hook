@@ -28,6 +28,13 @@ public class MainActivity extends AppCompatActivity {
                 NativeTry.testLibcHook();
             }
         });
+        final Button bt_test_libart_hook = findViewById(R.id.bt_test_libart_hook);
+        bt_test_libart_hook.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NativeTry.testLibArtHook();
+            }
+        });
     }
 
 }
