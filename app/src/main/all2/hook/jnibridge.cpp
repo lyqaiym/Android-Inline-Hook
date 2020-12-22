@@ -123,6 +123,8 @@ Java_com_example_hook_NativeTry_testLibcHook(JNIEnv *env, jclass clazz) {
     LOG_DEBUG("testLibc:q1=%d,r1=%d,q2=%d,r2=%d", div1.quot, div1.rem, div2.quot, div2.rem);
 }
 
+#if defined(__arm__)
+
 void libart_call2(pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
 {
     LOGI("libart_call2");
@@ -135,10 +137,30 @@ void libart_call2(pt_regs *regs) //参数regs就是指向栈上的一个数据�
     LOGI("libart_call2.r0=%ld,r5=%ld,r7=%ld", r0, r5, r7);
 }
 
+#elif defined(__aarch64__)
+
+void libart_call2(user_pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
+{
+    LOGI("libart_call2");
+//    long r1 = regs->regs[0];
+//    long r2 = regs->regs[1];
+//    LOGI("libart_call2.r1=%ld,r2=%ld", r1, r2);
+//    regs->regs[1] = 0x2;
+}
+
+#endif
+
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_hook_NativeTry_testLibArtHook(JNIEnv *env, jclass clazz) {
     dlopen("libart.so", RTLD_NOW);
-    int target_offset = 0x18d2f0;
+    int target_offset;
+#if defined(__arm__)
+    LOG_DEBUG("testLibart_32");
+    target_offset = 0x18d2f0;
+#elif defined(__aarch64__)
+    LOG_DEBUG("testLibart_64");
+    target_offset = 0x22f796;
+#endif
     ModifyIBored("libart.so", target_offset, libart_call2);
 }
