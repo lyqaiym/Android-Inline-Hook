@@ -150,19 +150,6 @@ void libart_call2(user_pt_regs *regs) //参数regs就是指向栈上的一个数
 
 #endif
 
-#elif defined(__aarch64__)
-
-void libart_call2(user_pt_regs *regs) //参数regs就是指向栈上的一个数据结构，由第二部分的mov r0, sp所传递。
-{
-    LOGI("libart_call2");
-//    long r1 = regs->regs[0];
-//    long r2 = regs->regs[1];
-//    LOGI("libart_call2.r1=%ld,r2=%ld", r1, r2);
-//    regs->regs[1] = 0x2;
-}
-
-#endif
-
 extern "C"
 JNIEXPORT void JNICALL
 Java_com_example_hook_NativeTry_testLibArtHook(JNIEnv *env, jclass clazz) {
