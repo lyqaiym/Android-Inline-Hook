@@ -411,7 +411,7 @@ int fixPCOpcodeArm64(uint64_t pc, uint64_t lr, uint32_t instruction, uint32_t *t
 	//trampoline_instructions[trampoline_pos++] == 0xf85f83e0; // ldr x0, [sp, #-0x8] recover the x0 register
 	LOGI("THE ARM64 OPCODE IS %x",instruction);
 	type = getTypeInArm64(instruction);
-	LOGI("fixPCOpcodeArm64:type=%d",type);
+	LOGI("fixPCOpcodeArm64:type=%d,%d,%d",type,LDR_ARM,LDR_ARM64_32);
 	//type = getTypeInArm(instruction); //判断该arm指令的种类
 
 	if (type == B_COND_ARM64) {

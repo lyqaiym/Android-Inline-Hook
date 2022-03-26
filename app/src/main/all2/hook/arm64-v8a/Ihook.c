@@ -72,7 +72,7 @@ void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
     {
         return (void *)ulBaseValue;
     }
-    LOGI("%d",pFileMaps);
+    LOGI("pFileMaps=%d",pFileMaps);
 
     LOGI("Get map.\n");
 
@@ -83,7 +83,7 @@ void * GetModuleBaseAddr(pid_t pid, char* pszModuleName)
         //LOGI("%s\n",pszModuleName);
         if (strstr(szFileLineBuffer, pszModuleName))
         {
-            LOGI("%s\n",szFileLineBuffer);
+            LOGI("szFileLineBuffer=%s\n",szFileLineBuffer);
             char *pszModuleAddress = strtok(szFileLineBuffer, "-");
             if (pszModuleAddress)
             {
@@ -122,7 +122,7 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
     for(int i=0;i<6;i++){
         //currentOpcode += i; //GToad BUG
         LOGI("Arm64 Opcode to fix %d : %x",i,*currentOpcode);
-        LOGI("Fix length : %d",lengthFixArm32(*currentOpcode));
+        LOGI("Fix length : %d",lengthFixArm64(*currentOpcode));
         pstInlineHook->backUpFixLengthList[i] = lengthFixArm64(*currentOpcode);
         currentOpcode += 1; //GToad BUG
     }

@@ -21,7 +21,7 @@
 #define BACKUP_CODE_NUM_MAX 6  //尽管备份原程序6条arm64指令。
 
 #define LOG_TAG "inlinehook"
-#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, fmt, ##args);
+#define LOGI(fmt, args...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, fmt, ##args);
 
 #define PAGE_START(addr)	(~(PAGE_SIZE - 1) & (addr))
 #define SET_BIT0(addr)		(addr | 1)
