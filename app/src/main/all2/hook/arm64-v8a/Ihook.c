@@ -119,7 +119,7 @@ bool InitArmHookInfo(INLINE_HOOK_INFO* pstInlineHook)
 
     memcpy(pstInlineHook->szbyBackupOpcodes, pstInlineHook->pHookAddr, pstInlineHook->backUpLength);
 
-    for(int i=0;i<6;i++){
+    for(int i=0;i<BACKUP_CODE_NUM_MAX;i++){
         //currentOpcode += i; //GToad BUG
         LOGI("Arm64 Opcode to fix %d : %x",i,*currentOpcode);
         LOGI("Fix length : %d",lengthFixArm64(*currentOpcode));
@@ -209,7 +209,7 @@ bool BuildArmJumpCode(void *pCurAddress , void *pJumpAddress)
             LOGI("address null.");
             break;
         }
-        LOGI("LIVE4.3.3");
+        LOGI("LIVE4.3.3:cur=%p,jump=%p",pCurAddress,pJumpAddress);
         //LDR PC, [PC, #-4]
         //addr
         //LDR PC, [PC, #-4]对应的机器码为：0xE51FF004
